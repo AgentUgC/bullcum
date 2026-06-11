@@ -45,7 +45,7 @@ export interface Bull {
   dailyMax: number;
   status: BullStatus;
   supplementUsed: boolean;
- 强化料Count: number;
+  supplementCount: number;
   boundToUltimate: boolean;
   currentLocation: string;
 }
@@ -82,8 +82,8 @@ export interface Order {
 export interface Inventory {
   grass: number;
   water: number;
- 强化料: number;
   supplement: number;
+  ultimateSupplement: number;
   semenStandard: number;
   semenPremium: number;
   semenSuperior: number;

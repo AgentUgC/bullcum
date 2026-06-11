@@ -7,7 +7,7 @@ export default function WarehouseView() {
   const resources = [
     { label: '牧草', value: inv.grass, unit: 'kg', icon: '草', color: 'var(--success)' },
     { label: '净水', value: inv.water, unit: 'L', icon: '水', color: 'var(--sci-cyan)' },
-    { label: '营养强化料', value: inv.强化料, unit: '份', icon: '✦', color: 'var(--amber)' },
+    { label: '营养强化料', value: inv.supplement, unit: '份', icon: '✦', color: 'var(--amber)' },
     { label: '终极营养补充液', value: inv.supplement, unit: '份', icon: '◆', color: 'var(--q-superior)' },
     { label: '标准精液', value: inv.semenStandard, unit: 'ml', icon: '○', color: 'var(--q-standard)' },
     { label: '优级精液', value: inv.semenPremium, unit: 'ml', icon: '◇', color: 'var(--q-premium)' },

@@ -30,7 +30,7 @@ function gameReducer(state: GameState, action: Action): GameState {
           dailyMax: 10,
           status: b.status === 'weak' ? 'weak' : 'healthy',
           supplementUsed: false,
-          强化料Count: 0,
+          supplementCount: 0,
           boundToUltimate: false,
           currentLocation: '休息棚',
         })),

@@ -106,7 +106,7 @@ function makeBull(index: number): Bull {
     dailyMax: 10,
     status: 'healthy',
     supplementUsed: false,
-    强化料Count: 0,
+    supplementCount: 0,
     boundToUltimate: false,
     currentLocation: locs[index],
   };
@@ -133,7 +133,7 @@ export const mockOrders: Order[] = [
 ];
 
 export const mockInventory: Inventory = {
-  grass: 0, water: 0, 强化料: 0, supplement: 0,
+  grass: 0, water: 0, supplement: 0, ultimateSupplement: 0,
   semenStandard: 0, semenPremium: 0, semenSuperior: 0,
 };
 

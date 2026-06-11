@@ -1,60 +1,80 @@
 import { useGameState } from '../../hooks/useGameState';
 import type { SceneId } from '../../App';
-
-const sceneNames: Record<SceneId, string> = {
-  pasture: '人造牧场大厅',
-  collection: '采精车间',
-  manual: '人工采精室',
-  rest: '休息棚',
-  breeding: '培育室',
-  orders: '订单中心',
-  warehouse: '仓库',
-  medical: '医疗室',
-};
+import { zones } from '../../data/worldLayout';
 
 interface Props {
-  scene: SceneId;
+  activeZone: SceneId | null;
+  onZoneChange: (zone: SceneId | null) => void;
 }
 
-export default function TopBar({ scene }: Props) {
+export default function TopBar({ activeZone, onZoneChange }: Props) {
   const state = useGameState();
+  const currentZone = zones.find(z => z.id === activeZone);
 
   return (
     <header
       style={{
         height: 48,
-        background: 'rgba(250,243,232,0.85)',
-        backdropFilter: 'blur(6px)',
+        background: 'rgba(250,243,232,0.9)',
+        backdropFilter: 'blur(8px)',
         borderBottom: '2px solid var(--espresso)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
         padding: '0 16px',
         gap: 16,
-        zIndex: 100,
-        position: 'relative',
+        pointerEvents: 'auto',
       }}
     >
       <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
         <span style={{ fontFamily: 'var(--font-display)', fontSize: 16, color: 'var(--amber)' }}>
           种牛世界
         </span>
-        <span
+
+        {/* Zone indicator / overview toggle */}
+        <button
+          onClick={() => onZoneChange(null)}
           style={{
             fontSize: 12,
             color: 'var(--warm-brown)',
-            opacity: 0.8,
-            padding: '2px 8px',
-            background: 'var(--cream)',
-            border: '1px solid var(--espresso)',
+            padding: '2px 10px',
+            background: activeZone ? 'var(--cream)' : 'var(--peach)',
+            border: '2px solid var(--espresso)',
+            cursor: 'pointer',
+            fontFamily: 'var(--font-body)',
+            fontWeight: activeZone ? 400 : 700,
           }}
         >
-          {sceneNames[scene]}
-        </span>
+          {activeZone ? currentZone?.name : '全景总览'}
+        </button>
+      </div>
+
+      {/* Quick nav pills */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 6, flex: 1, justifyContent: 'center', overflow: 'hidden' }}>
+        {zones.map(zone => (
+          <button
+            key={zone.id}
+            onClick={() => onZoneChange(zone.id as SceneId)}
+            title={zone.name}
+            style={{
+              padding: '2px 8px',
+              fontSize: 10,
+              background: activeZone === zone.id ? zone.color : 'var(--cream)',
+              color: activeZone === zone.id ? '#fff' : 'var(--warm-brown)',
+              border: `2px solid ${activeZone === zone.id ? zone.color : 'var(--espresso)'}`,
+              cursor: 'pointer',
+              whiteSpace: 'nowrap',
+              opacity: activeZone === zone.id ? 1 : 0.7,
+              transition: 'all 0.2s',
+            }}
+          >
+            {zone.icon} {zone.name}
+          </button>
+        ))}
       </div>
 
       <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-        <ResourcePill label="牧草" value={state.inventory.grass} unit="kg" color="var(--success)" />
+        <ResourcePill label="牧草" value={state.inventory.hay} unit="kg" color="var(--success)" />
         <ResourcePill label="净水" value={state.inventory.water} unit="L" color="var(--sci-cyan)" />
 
         <div

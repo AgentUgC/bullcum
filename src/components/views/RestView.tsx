@@ -161,7 +161,7 @@ export default function RestView({ goToScene }: Props) {
               <DataRow label="今日采集" value={`${selectedBull.dailyCollected} / ${selectedBull.dailyMax}`} />
               <DataRow label="状态" value={selectedBull.status === 'healthy' ? '健康' : '虚弱'} />
               <DataRow label="服用补充液" value={selectedBull.supplementUsed ? '是' : '否'} />
-              <DataRow label="强化料" value={`${selectedBull.强化料Count} 份`} />
+              <DataRow label="强化料" value={`${selectedBull.supplementCount} 份`} />
 
               <div style={{ marginTop: 16, paddingTop: 12, borderTop: '1px solid var(--light-wood)' }}>
                 <div style={{ fontWeight: 700, fontSize: 12, marginBottom: 8 }}>身体数据</div>

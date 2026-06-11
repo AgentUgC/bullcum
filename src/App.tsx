@@ -1,14 +1,9 @@
-import { useState, useCallback } from 'react';
+import { useState } from 'react';
 import { GameProvider } from './hooks/useGameState';
-import AppLayout from './components/layout/AppLayout';
-import PastureView from './components/views/PastureView';
-import CollectionView from './components/views/CollectionView';
-import ManualView from './components/views/ManualView';
-import RestView from './components/views/RestView';
-import BreedingView from './components/views/BreedingView';
-import OrdersView from './components/views/OrdersView';
-import WarehouseView from './components/views/WarehouseView';
-import MedicalView from './components/views/MedicalView';
+import WorldMap from './components/world/WorldMap';
+import TopBar from './components/layout/TopBar';
+import LLMConsole from './components/layout/LLMConsole';
+import ToastContainer from './components/layout/ToastContainer';
 
 export type SceneId =
   | 'pasture'
@@ -21,37 +16,25 @@ export type SceneId =
   | 'medical';
 
 export default function App() {
-  const [scene, setScene] = useState<SceneId>('pasture');
-  const [transitioning, setTransitioning] = useState(false);
-
-  const goToScene = useCallback((target: SceneId) => {
-    if (target === scene) return;
-    setTransitioning(true);
-    setTimeout(() => {
-      setScene(target);
-      setTimeout(() => setTransitioning(false), 50);
-    }, 350);
-  }, [scene]);
+  const [activeZone, setActiveZone] = useState<SceneId | null>(null);
 
   return (
     <GameProvider>
-      <AppLayout scene={scene} transitioning={transitioning}>
-        <SceneRenderer scene={scene} goToScene={goToScene} />
-      </AppLayout>
+      <div style={{ width: '100vw', height: '100vh', overflow: 'hidden', position: 'relative' }}>
+        {/* World Map - full screen canvas */}
+        <WorldMap activeZone={activeZone} onZoneChange={setActiveZone} />
+
+        {/* Floating UI overlays */}
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100, pointerEvents: 'none' }}>
+          <TopBar activeZone={activeZone} onZoneChange={setActiveZone} />
+        </div>
+
+        <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 100 }}>
+          <LLMConsole />
+        </div>
+
+        <ToastContainer />
+      </div>
     </GameProvider>
   );
-}
-
-function SceneRenderer({ scene, goToScene }: { scene: SceneId; goToScene: (s: SceneId) => void }) {
-  switch (scene) {
-    case 'pasture':    return <PastureView    goToScene={goToScene} />;
-    case 'collection': return <CollectionView goToScene={goToScene} />;
-    case 'manual':     return <ManualView     goToScene={goToScene} />;
-    case 'rest':       return <RestView       goToScene={goToScene} />;
-    case 'breeding':   return <BreedingView   goToScene={goToScene} />;
-    case 'orders':     return <OrdersView     goToScene={goToScene} />;
-    case 'warehouse':  return <WarehouseView  goToScene={goToScene} />;
-    case 'medical':    return <MedicalView    goToScene={goToScene} />;
-    default:           return <PastureView    goToScene={goToScene} />;
-  }
 }
