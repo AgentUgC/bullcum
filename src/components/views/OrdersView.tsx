@@ -1,7 +1,10 @@
 import { useGameState, useGameActions } from '../../hooks/useGameState';
 import { showToast } from '../layout/ToastContainer';
+import type { SceneId } from '../../App';
 
-export default function OrdersView() {
+interface Props { goToScene: (s: SceneId) => void; }
+
+export default function OrdersView({ goToScene }: Props) {
   const state = useGameState();
   const { updateOrder, addCurrency } = useGameActions();
 
@@ -19,41 +22,33 @@ export default function OrdersView() {
 
   return (
     <div style={{ padding: 20, maxWidth: 900, margin: '0 auto', height: '100%', overflow: 'auto' }}>
-      <h2 style={{ fontSize: 22, marginBottom: 4 }}>订单中心</h2>
-      <p style={{ fontSize: 12, opacity: 0.7, marginBottom: 16 }}>通过国家统一平台接单、交付、结算</p>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+        <div>
+          <h2 style={{ fontSize: 22, marginBottom: 4 }}>订单中心</h2>
+          <p style={{ fontSize: 12, opacity: 0.7 }}>通过国家统一平台接单、交付、结算</p>
+        </div>
+        <button onClick={() => goToScene('pasture')} className="back-to-hall">← 返回大厅</button>
+      </div>
 
-      {/* Inventory Strip */}
       <div style={{ display: 'flex', gap: 10, marginBottom: 20 }}>
         <InvCard label="标准库存" value={`${state.inventory.semenStandard} ml`} color="var(--q-standard)" />
         <InvCard label="优级库存" value={`${state.inventory.semenPremium} ml`} color="var(--q-premium)" />
         <InvCard label="特级库存" value={`${state.inventory.semenSuperior} ml`} color="var(--q-superior)" />
       </div>
 
-      {/* Orders */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
         {state.orders.map(order => {
           const progress = Math.min(100, (order.delivered / order.demand) * 100);
           const qualityLabel = order.quality === 'superior' ? '特级' : order.quality === 'premium' ? '优级' : '标准';
           return (
-            <div key={order.id} className="pixel-border" style={{
-              padding: 14, background: order.completed ? 'rgba(109,160,109,0.1)' : 'var(--cream)',
-              opacity: order.completed ? 0.7 : 1,
-            }}>
+            <div key={order.id} className="pixel-border" style={{ padding: 14, background: order.completed ? 'rgba(109,160,109,0.1)' : 'var(--cream)', opacity: order.completed ? 0.7 : 1 }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 8 }}>
                 <div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 4 }}>
-                    <span style={{
-                      fontSize: 10, padding: '2px 6px', background:
-                        order.quality === 'superior' ? 'var(--q-superior)' : order.quality === 'premium' ? 'var(--q-premium)' : 'var(--q-standard)',
-                      color: '#fff', fontWeight: 700,
-                    }}>
-                      {qualityLabel}
-                    </span>
+                    <span style={{ fontSize: 10, padding: '2px 6px', background: order.quality === 'superior' ? 'var(--q-superior)' : order.quality === 'premium' ? 'var(--q-premium)' : 'var(--q-standard)', color: '#fff', fontWeight: 700 }}>{qualityLabel}</span>
                     <span style={{ fontSize: 12, fontWeight: 700 }}>{order.type === 'guaranteed' ? '保底订单' : '随机订单'}</span>
                   </div>
-                  {order.source && (
-                    <div style={{ fontSize: 11, opacity: 0.8 }}>{order.source} · {order.usage} · {order.scale}</div>
-                  )}
+                  {order.source && <div style={{ fontSize: 11, opacity: 0.8 }}>{order.source} · {order.usage} · {order.scale}</div>}
                 </div>
                 <div style={{ textAlign: 'right' }}>
                   <div style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, fontSize: 14 }}>{order.revenue} ◎</div>
@@ -69,17 +64,9 @@ export default function OrdersView() {
               </div>
 
               {!order.completed && (
-                <button
-                  onClick={() => deliver(order)}
-                  className="pixel-border"
-                  style={{ padding: '6px 14px', background: 'var(--amber)', cursor: 'pointer', fontSize: 12, float: 'right' }}
-                >
-                  交付订单
-                </button>
+                <button onClick={() => deliver(order)} className="pixel-border" style={{ padding: '6px 14px', background: 'var(--amber)', cursor: 'pointer', fontSize: 12, float: 'right' }}>交付订单</button>
               )}
-              {order.completed && (
-                <div style={{ fontSize: 11, color: 'var(--success)', fontWeight: 700, textAlign: 'right' }}>已完成</div>
-              )}
+              {order.completed && <div style={{ fontSize: 11, color: 'var(--success)', fontWeight: 700, textAlign: 'right' }}>已完成</div>}
             </div>
           );
         })}
